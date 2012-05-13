@@ -46,11 +46,13 @@
 ini_set('mbstring.func_overload', 0);
 ini_set('mbstring.internal_encoding', NULL);
 
-if (strpos('@php_bin@', '@php_bin') === 0) {
-    require 'src/autoload.php';
-} else {
-    require 'SebastianBergmann/PHPCPD/autoload.php';
-}
+$class_loader = require __DIR__.'/vendor/autoload.php';
+$class_loader->add('SebastianBergmann\PHPCPD', 'src');
 
-$textui = new SebastianBergmann\PHPCPD\TextUI\Command;
-$textui->main();
+use Symfony\Component\Console\Application;
+use SebastianBergmann\PHPCPD\Console\Run as RunCommand;
+
+$application = new Application();
+$application->add(new RunCommand());
+$application->run();
+

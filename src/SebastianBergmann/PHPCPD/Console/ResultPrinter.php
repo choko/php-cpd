@@ -41,15 +41,15 @@
  * @since     File available since Release 1.0.0
  */
 
-namespace SebastianBergmann\PHPCPD\Detector
+namespace SebastianBergmann\PHPCPD\Console
 {
-    use SebastianBergmann\PHPCPD\Detector\Strategy\AbstractStrategy;
+    use Symfony\Component\Console\Output\OutputInterface;
     use SebastianBergmann\PHPCPD\CodeCloneMap;
+    use SebastianBergmann\Timer\Timer;
 
     /**
-     * PHPCPD code analyser.
+     * A ResultPrinter for the TextUI.
      *
-     * @author    Johann-Peter Hartmann <johann-peter.hartmann@mayflower.de>
      * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
      * @copyright 2009-2012 Sebastian Bergmann <sb@sebastian-bergmann.de>
      * @license   http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
@@ -57,63 +57,75 @@ namespace SebastianBergmann\PHPCPD\Detector
      * @link      http://github.com/sebastianbergmann/phpcpd/tree
      * @since     Class available since Release 1.0.0
      */
-    class Detector
+    class ResultPrinter
     {
-        /**
-         * @var Strategy
-         */
-        protected $strategy;
-
-        /**
-         * @var ezcConsoleOutput
-         */
         protected $output;
 
-        /**
-         * Constructor.
-         *
-         * @param AbstractStrategy $strategy
-         * @param ezcConsoleOutput $output
-         * @since Method available since Release 1.3.0
-         */
-        public function __construct(AbstractStrategy $strategy, \ezcConsoleOutput $output = NULL)
+        public function __construct(OutputInterface $output)
         {
-            $this->strategy = $strategy;
-            $this->output   = $output;
+            $this->output = $output;
         }
 
         /**
-         * Copy & Paste Detection (CPD).
+         * Prints a result set from Detector::copyPasteDetection().
          *
-         * @param  Iterator|array $files     List of files to process
-         * @param  integer        $minLines  Minimum number of identical lines
-         * @param  integer        $minTokens Minimum number of identical tokens
-         * @return CodeCloneMap   Map of exact clones found in the list of files
+         * @param CodeCloneMap $clones
+         * @param bool         $printClones
+         * @param bool         $verbose
          */
-        public function copyPasteDetection($files, $minLines = 5, $minTokens = 70)
+        public function printResult(CodeCloneMap $clones, $printClones, $verbose)
         {
-            $result = new CodeCloneMap;
+            $numClones = count($clones);
 
-            if ($this->output !== NULL) {
-                $bar = new \ezcConsoleProgressbar($this->output, count($files));
-                print "Processing files\n";
-            }
+            if ($numClones > 0) {
+                $buffer = '';
+                $files  = array();
+                $lines  = 0;
 
-            foreach ($files as $file) {
-                $this->strategy->processFile(
-                  $file, $minLines, $minTokens, $result
-                );
+                foreach ($clones as $clone) {
+                    if (!isset($files[$clone->aFile])) {
+                        $files[$clone->aFile] = TRUE;
+                    }
 
-                if ($this->output !== NULL) {
-                    $bar->advance();
+                    if (!isset($files[$clone->bFile])) {
+                        $files[$clone->bFile] = TRUE;
+                    }
+
+                    $lines += $clone->size;
+
+                    if ($printClones) {
+                        $buffer .= sprintf(
+                          "\n  - %s:%d-%d\n    %s:%d-%d\n",
+                          $clone->aFile,
+                          $clone->aStartLine,
+                          $clone->aStartLine + $clone->size,
+                          $clone->bFile,
+                          $clone->bStartLine,
+                          $clone->bStartLine + $clone->size
+                        );
+
+                        if ($verbose) {
+                            $buffer .= "\n" . $clone->getLines('      ');
+                        }
+                    }
                 }
+
+                $this->output->writeln(sprintf(
+                  "Found %d exact clones with %d duplicated lines in %d files%s",
+                  $numClones,
+                  $lines,
+                  count($files),
+                  $printClones ? ":\n" . $buffer : "."
+                ));
             }
 
-            if ($this->output !== NULL) {
-                print "\n\n";
-            }
-
-            return $result;
+            $this->output->writeln(sprintf(
+              "%s%s duplicated lines out of %d total lines of code.\n\n%s\n",
+              $numClones > 0 ? "\n" : '',
+              $clones->getPercentage(),
+              $clones->getNumLines(),
+              Timer::resourceUsage()
+            ));
         }
     }
 }

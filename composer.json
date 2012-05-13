@@ -1,0 +1,25 @@
+{
+    "name": "sebastianbergmann/cpd",
+    "description": "PHP Copy/Paste Detector",
+    "require": {
+        "symfony/console": "2.1.x-dev",
+        "sebastianbergmann/finder-facade": "dev-master",
+        "sebastianbergmann/timer": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "http://github.com/hartym/php-finder-facade.git"
+        },
+        {
+            "type": "git",
+            "url": "http://github.com/hartym/php-timer.git"
+        }
+    ],
+    "authors": [
+        {
+            "name": "Sebastian Bergmann",
+            "email": "sb@sebastian-bergmann.de"
+        }
+    ]
+}
