@@ -2,7 +2,7 @@
     "name": "sebastianbergmann/cpd",
     "description": "PHP Copy/Paste Detector",
     "require": {
-        "symfony/console": "2.1.x-dev",
+        "symfony/console": "2.1.7",
         "sebastianbergmann/finder-facade": "dev-master",
         "sebastianbergmann/timer": "dev-master"
     },
