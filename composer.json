@@ -3,8 +3,8 @@
     "description": "PHP Copy/Paste Detector",
     "require": {
         "symfony/console": "2.1.7",
-        "sebastian/finder-facade": "dev-master",
-        "phpunit/timer": "dev-master"
+        "sebastian/finder-facade": "dev-symfony-2.2",
+        "phpunit/timer": "1.0.4"
     },
     "authors": [
         {
