@@ -3,19 +3,9 @@
     "description": "PHP Copy/Paste Detector",
     "require": {
         "symfony/console": "2.1.7",
-        "sebastianbergmann/finder-facade": "dev-master",
-        "sebastianbergmann/timer": "dev-master"
+        "sebastian/finder-facade": "dev-master",
+        "phpunit/timer": "dev-master"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "http://github.com/hartym/php-finder-facade.git"
-        },
-        {
-            "type": "git",
-            "url": "http://github.com/hartym/php-timer.git"
-        }
-    ],
     "authors": [
         {
             "name": "Sebastian Bergmann",
