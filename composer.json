@@ -3,13 +3,19 @@
     "description": "PHP Copy/Paste Detector",
     "require": {
         "symfony/console": "2.1.7",
-        "sebastian/finder-facade": "dev-master#d7132079f595b241b9a2153fa9aad63dff8c64b8",
+        "sebastian/finder-facade": "dev-master",
         "phpunit/php-timer": "1.0.4"
     },
     "authors": [
         {
             "name": "Sebastian Bergmann",
             "email": "sb@sebastian-bergmann.de"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/choko/finder-facade.git"
         }
     ]
 }
